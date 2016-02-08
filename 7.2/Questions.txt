@@ -3,7 +3,5 @@ can accomplish the same thing?
 
 I came across material that suggested that 'assert' isn't really used 'in production' because it causes your program to crash. Does this mean assertions are mainly used during development mode and then are changed over to try/except blocks for production mode programs?
 
-(Backtracking) Contracts seem to be redundant when assertions and unit tests are already in place. What are the ideal conditions for using contracts?
-
 
 

@@ -7,6 +7,19 @@ dd/mm/yyyy username
 import re
 from get_input import get_input
 
+def is_valid(user_input):
+    """Take input in the form of a string. Verify the string matches
+    the format:
+    mm/dd/yyyy:username@host
+    Return True for valid, False for invalid.
+    """
+    try:
+        if re.search(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}:[\w.-]+@[\w.-]+", user_input) is None:
+            raise Exception
+        return True
+    except BaseException:
+        return False
+
 def convert_input(string, desired_host):
     """Take in a string and a desired host. If the host found in the
     string matches the desired host, then convert the found date to the
@@ -74,7 +87,10 @@ if __name__ == "__main__":
     INPUT = get_input()
     HOST = 'aol.com' # Enter desired host here.
     while not INPUT.isspace() and INPUT:
-        VALID_OUTPUT = convert_input(INPUT, HOST)
-        if VALID_OUTPUT:
-            print VALID_OUTPUT
-        INPUT = get_input()
+        if is_valid(INPUT):
+            OUTPUT = convert_input(INPUT, HOST)
+            if OUTPUT:
+                print OUTPUT
+            INPUT = get_input()
+        else: # Skip it and continue on with the next line of input.
+            INPUT = get_input()
