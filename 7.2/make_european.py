@@ -8,7 +8,8 @@ import re
 from get_input import get_input
 
 def make_int(string):
-    """Convert a given string to an integer."""
+    """Convert a given string to an integer. If it cannot be converted,
+    return None."""
     try:
         return int(string)
     except ValueError:
@@ -21,30 +22,44 @@ def is_valid(user_input):
     Return True for valid, False for invalid.
     """
     assert isinstance(user_input, str), "Input must be a string."
-    if re.search(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}:[\w.-]+@[\w.-]+", user_input):
-        return True
-    return False
+    return re.search(REGEX_RULE, user_input)
 
 def is_valid_date(month, day, year):
     """Take in three integers representing a month, day, and year.
     Assert they are valid representations and return True.
     """
-    try:
-        assert 1 <= month <= 12, "Please enter a valid month."
+    if valid_month(month):
+        if valid_day(day, month):
+            if valid_year(year):
+                return True
+    return False
 
-        month31 = [1, 3, 5, 7, 8, 10, 12]
-        month30 = [4, 6, 9, 11]
-        if month in month31:
-            assert 1 <= day <= 31, "Please enter a valid day."
-        if month in month30:
-            assert 1 <= day <= 30, "Please enter a valid day."
-        if month == 2:
-            assert 1 <= day <= 28, "Please enter a valid day."
+def valid_month(month):
+    """Take in an integer representing a month of the year. Return True
+    if it is valid. Otherwise, return False.
+    """
+    return 1 <= month <= 12
 
-        assert 1900 <= year <= 2100, "Please enter a valid year."
-        return True
-    except AssertionError:
-        return False
+def valid_day(day, month):
+    """Take in an integer representing a day and month of the year.
+    Return True if it is a valid day for the given month. Otherwise,
+    return False.
+    """
+    month31 = [1, 3, 5, 7, 8, 10, 12]
+    month30 = [4, 6, 9, 11]
+    assert valid_month(month)
+    if month in month31:
+        return 1 <= day <= 31
+    if month in month30:
+        return 1 <= day <= 30
+    if month == 2:
+        return 1 <= day <= 28
+
+def valid_year(year):
+    """Take in an integer representing a pertinent year. Return True if
+    it is valid. Otherwise, return False.
+    """
+    return 1900 <= year <= 2100
 
 def convert_input(string, desired_host):
     """Take in a string and a desired host. If the host found in the
@@ -64,16 +79,11 @@ def find_email_address(string):
     address found in the string.
     """
     assert isinstance(string, str), "The input for find_email_address needs to be a string."
+    data = re.search(REGEX_RULE, string)
+    assert data, "An input in the format mm/dd/yyyy:username@host must be provided."
 
-    email_address = re.search( # search for username@host
-        r"(?P<username>[\w.-]+)" # the username
-        r"@(?P<host>[\w.-]+)", # the host
-        string
-    )
-    assert email_address, "A proper email address must be provided."
-
-    username = email_address.group('username')
-    host = email_address.group('host')
+    username = data.group('username')
+    host = data.group('host')
 
     return (username, host)
 
@@ -81,18 +91,12 @@ def find_date(string):
     """Take in a string and return the month, day, and year of the date
     found in the string."""
     assert isinstance(string, str), "The function find_date takes a string."
+    data = re.search(REGEX_RULE, string)
+    assert data, "An input in the format mm/dd/yyyy:username@host must be provided."
 
-    date = re.search( # search for mm/dd/yyyy
-        "(?P<month>[0-9]{1,2})" # the month
-        "/(?P<day>[0-9]{1,2})" # the day
-        "/(?P<year>[0-9]{4})", # the year
-        string
-    )
-    assert date, "A date in the format mm/dd/yyyy must be provided."
-
-    month = make_int(date.group('month'))
-    day = make_int(date.group('day'))
-    year = make_int(date.group('year'))
+    month = make_int(data.group('month'))
+    day = make_int(data.group('day'))
+    year = make_int(data.group('year'))
 
     if is_valid_date(month, day, year):
         return (str(month), str(day), str(year))
@@ -100,6 +104,12 @@ def find_date(string):
 if __name__ == "__main__":
     INPUT = get_input()
     HOST = 'aol.com' # Enter desired host here.
+    REGEX_RULE = ("(?P<month>[0-9]{1,2})" # Month.
+                  "/(?P<day>[0-9]{1,2})" # Day.
+                  "/(?P<year>[0-9]{4})" # Year.
+                  r":(?P<username>[\w.-]+)" # Username.
+                  r"@(?P<host>[\w.-]+)" # Host.
+                 )
     while not INPUT.isspace() and INPUT:
         if is_valid(INPUT):
             OUTPUT = convert_input(INPUT, HOST)
