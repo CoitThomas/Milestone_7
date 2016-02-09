@@ -7,17 +7,43 @@ dd/mm/yyyy username
 import re
 from get_input import get_input
 
+def make_int(string):
+    """Convert a given string to an integer."""
+    try:
+        return int(string)
+    except ValueError:
+        return None
+
 def is_valid(user_input):
     """Take input in the form of a string. Verify the string matches
     the format:
     mm/dd/yyyy:username@host
     Return True for valid, False for invalid.
     """
-    try:
-        if re.search(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}:[\w.-]+@[\w.-]+", user_input) is None:
-            raise Exception
+    assert isinstance(user_input, str), "Input must be a string."
+    if re.search(r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}:[\w.-]+@[\w.-]+", user_input):
         return True
-    except BaseException:
+    return False
+
+def is_valid_date(month, day, year):
+    """Take in three integers representing a month, day, and year.
+    Assert they are valid representations and return True.
+    """
+    try:
+        assert 1 <= month <= 12, "Please enter a valid month."
+
+        month31 = [1, 3, 5, 7, 8, 10, 12]
+        month30 = [4, 6, 9, 11]
+        if month in month31:
+            assert 1 <= day <= 31, "Please enter a valid day."
+        if month in month30:
+            assert 1 <= day <= 30, "Please enter a valid day."
+        if month == 2:
+            assert 1 <= day <= 28, "Please enter a valid day."
+
+        assert 1900 <= year <= 2100, "Please enter a valid year."
+        return True
+    except AssertionError:
         return False
 
 def convert_input(string, desired_host):
@@ -57,31 +83,19 @@ def find_date(string):
     assert isinstance(string, str), "The function find_date takes a string."
 
     date = re.search( # search for mm/dd/yyyy
-        "([0-9]{1,2})" # the month
-        "/([0-9]{1,2})" # the day
-        "/([0-9]{4})", # the year
+        "(?P<month>[0-9]{1,2})" # the month
+        "/(?P<day>[0-9]{1,2})" # the day
+        "/(?P<year>[0-9]{4})", # the year
         string
     )
     assert date, "A date in the format mm/dd/yyyy must be provided."
 
-    month = int(date.group(1))
-    day = int(date.group(2))
-    year = int(date.group(3))
+    month = make_int(date.group('month'))
+    day = make_int(date.group('day'))
+    year = make_int(date.group('year'))
 
-    assert 1 <= month <= 12, "Please enter a valid month."
-
-    month31 = [1, 3, 5, 7, 8, 10, 12]
-    month30 = [4, 6, 9, 11]
-    if month in month31:
-        assert 1 <= day <= 31, "Please enter a valid day."
-    if month in month30:
-        assert 1 <= day <= 30, "Please enter a valid day."
-    if month == 2:
-        assert 1 <= day <= 28, "Please enter a valid day."
-
-    assert 1900 <= year <= 2100, "Please enter a valid year."
-
-    return (str(month), str(day), str(year))
+    if is_valid_date(month, day, year):
+        return (str(month), str(day), str(year))
 
 if __name__ == "__main__":
     INPUT = get_input()

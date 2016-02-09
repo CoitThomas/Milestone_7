@@ -15,7 +15,3 @@ def test_is_valid():
     assert not is_valid('12.31.2015:john.a.graham@gmail.com')
     # Check order.
     assert not is_valid('john.a.graham@gmail.com:12/31/2015')
-    # Check integer input.
-    assert not is_valid(12312015)
-    # Check float input.
-    assert not is_valid(1.0)
