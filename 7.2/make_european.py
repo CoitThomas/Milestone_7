@@ -33,13 +33,9 @@ def is_valid(user_input):
 
 def is_valid_date(month, day, year):
     """Take in three integers representing a month, day, and year.
-    Assert they are valid representations and return True.
+    Verify they are valid representations and return True or False.
     """
-    if valid_month(month):
-        if valid_day(day, month):
-            if valid_year(year):
-                return True
-    return False
+    return valid_month(month) and valid_day(day, month) and valid_year(year)
 
 def valid_month(month):
     """Take in an integer representing a month of the year. Return True
