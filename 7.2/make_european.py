@@ -7,6 +7,13 @@ dd/mm/yyyy username
 import re
 from get_input import get_input
 
+REGEX_RULE = ("(?P<month>[0-9]{1,2})" # Month.
+              "/(?P<day>[0-9]{1,2})" # Day.
+              "/(?P<year>[0-9]{4})" # Year.
+              r":(?P<username>[\w.-]+)" # Username.
+              r"@(?P<host>[\w.-]+)" # Host.
+             )
+
 def make_int(string):
     """Convert a given string to an integer. If it cannot be converted,
     return None."""
@@ -104,12 +111,6 @@ def find_date(string):
 if __name__ == "__main__":
     INPUT = get_input()
     HOST = 'aol.com' # Enter desired host here.
-    REGEX_RULE = ("(?P<month>[0-9]{1,2})" # Month.
-                  "/(?P<day>[0-9]{1,2})" # Day.
-                  "/(?P<year>[0-9]{4})" # Year.
-                  r":(?P<username>[\w.-]+)" # Username.
-                  r"@(?P<host>[\w.-]+)" # Host.
-                 )
     while not INPUT.isspace() and INPUT:
         if is_valid(INPUT):
             OUTPUT = convert_input(INPUT, HOST)

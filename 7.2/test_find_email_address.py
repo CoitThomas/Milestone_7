@@ -9,17 +9,17 @@ def test_find_email_address():
     function.
     """
     # Expected input.
-    assert make_european.find_email_address('orangelover1107@hanmail.net'
+    assert make_european.find_email_address('11/07/1984:orangelover1107@hanmail.net'
                                            ) == ('orangelover1107', 'hanmail.net')
     # Check username output.
-    assert make_european.find_email_address('gant_007@hotmail.com'
+    assert make_european.find_email_address('11/07/1984:gant_007@hotmail.com'
                                            ) != ('gant_007@', 'hotmail.com')
     # Check host output.
-    assert make_european.find_email_address('sterlingsmile@msn.com'
+    assert make_european.find_email_address('11/07/1984:sterlingsmile@msn.com'
                                            ) != ('sterlingsmile', '@msn.com')
     # Check return order.
-    assert make_european.find_email_address('kate2345@msn.com'
+    assert make_european.find_email_address('11/07/1984:kate2345@msn.com'
                                            ) != ('msn.com', 'kate2345')
     # Check input with misc. characters.
-    assert make_european.find_email_address('!@#coit125@aol.com^&*',
+    assert make_european.find_email_address('!@#11/07/1984:coit125@aol.com^&*',
                                            ) == ('coit125', 'aol.com')
